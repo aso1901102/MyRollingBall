@@ -52,12 +52,10 @@ class MainActivity : AppCompatActivity()
         holder.addCallback(this);
     }
 
-
     // 精度が変わった時のイベントコールバック
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
 
     }
-
 
     // センサーの値が変わった時のイベントコールバック
     override fun onSensorChanged(event: SensorEvent?) {
@@ -65,10 +63,6 @@ class MainActivity : AppCompatActivity()
         if(event == null){
             return;
         }
-
-        //Surfaceの高さが変わるたびに高さと幅を設定
-
-
 
         //センサーが変わった時にボールを描画する情報を計算する
         //一番最初のセンサー検知の初期時間を取得
