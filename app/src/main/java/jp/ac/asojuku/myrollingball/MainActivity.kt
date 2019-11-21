@@ -38,8 +38,6 @@ class MainActivity : AppCompatActivity()
     //前回の時間を記録する変数
     private var time:Long = 0L;
 
-
-
     // 誕生時のライフサイクルイベント
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
