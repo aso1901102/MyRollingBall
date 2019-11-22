@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="resetButtonsqure">120dp</dimen>
+    <dimen name="surfaceViewWidth">350dp</dimen>
+    <dimen name="surfaceViewHeight">450dp</dimen>
+    <dimen name="surfaceHeight">500dp</dimen>
+</resources>
