@@ -9,7 +9,7 @@
     <SurfaceView
         android:id="@+id/surfaceView"
         android:layout_width="@dimen/surfaceViewWidth"
-        android:layout_height="@dimen/surfaceHeight"
+        android:layout_height="@dimen/surfaceViewHeight"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
@@ -18,7 +18,7 @@
         app:layout_constraintVertical_bias="0.819" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/resetButton"
         android:layout_width="@dimen/resetButtonsqure"
         android:layout_height="@dimen/resetButtonsqure"
         android:scaleType="fitCenter"
@@ -28,6 +28,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.316"
-        app:srcCompat="@drawable/resetButton" />
+        app:srcCompat="@drawable/resetbutton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

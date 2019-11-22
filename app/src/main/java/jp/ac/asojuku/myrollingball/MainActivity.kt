@@ -50,6 +50,23 @@ class MainActivity : AppCompatActivity()
         holder.addCallback(this);
     }
 
+    //追加したライフサイクルメソッド
+    override fun onResume() {
+        super.onResume()
+        //resetButtonがクリックされたら実行
+        resetButton.setOnClickListener {
+            //ボールの初期位置を再設定
+            this.ballX = (surfaceWidth / 2).toFloat()
+            this.ballY = (surfaceHeight / 8).toFloat()
+            //X座標の重力加速度
+            vx = 0f;
+            //Y座標の重力加速度
+            vy = 0f;
+            //前回の時間を記録する変数
+            time = 0L;
+        }
+    }
+
     // 精度が変わった時のイベントコールバック
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
 
@@ -195,4 +212,7 @@ class MainActivity : AppCompatActivity()
         //キャンバスのロックを解除してキャンバスを描画
         surfaceView.holder.unlockCanvasAndPost(canvas)
     }
+
+    //resetButtonタップ時の処理
+
 }
