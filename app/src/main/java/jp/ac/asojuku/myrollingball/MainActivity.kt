@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity()
     //ボールの半径
     private val radius = 50.0f;
     //ボールの移動量を計算するための係数
-    private val coef = 500.0f;
+    private val coef = 750.0f;
 
     //ボールの座標
     //X座標
@@ -74,6 +74,11 @@ class MainActivity : AppCompatActivity()
 
     // センサーの値が変わった時のイベントコールバック
     override fun onSensorChanged(event: SensorEvent?) {
+
+        //ブロックの座標（left,top,right,bottom）
+        val block1 = arrayOf((surfaceWidth/1.5).toFloat(),(surfaceHeight/1.5).toFloat(),
+            (surfaceWidth/1.3).toFloat(),(surfaceHeight/1.3).toFloat())
+
         //eventの中身がnullなら何もせずにreturn
         if(event == null){
             return;
@@ -150,6 +155,36 @@ class MainActivity : AppCompatActivity()
                 this.ballY = (this.surfaceHeight - radius)
             }
 
+            //ブロックに当たった時の判定を作る
+            //上下の判定
+            if (block1[0] < ballX && block1[2] > ballX){
+                if (block1[1] > ballY){
+                    //ボールを反転させて勢いをつける
+                    vy = (vy * -1) / 1.5f;
+                    //ボールがはみ出しているのを補正
+                    ballY = this.radius;
+                }else if (block1[3] < ballY){
+                    //ボールを反転させて勢いをつける
+                    vy = (vy * -1) / 1.5f;
+                    //ボールがはみ出しているのを補正
+                    ballY = this.radius;
+                }
+            }
+            //左右の判定
+            if (block1[1] > ballY && block1[3] < ballY){
+                if (block1[0] < ballX){
+                    //ボールを反転させて勢いをつける
+                    vy = (vy * -1) / 1.5f;
+                    //ボールがはみ出しているのを補正
+                    ballY = this.radius;
+                }else if (block1[2] > ballY){
+                    //ボールを反転させて勢いをつける
+                    vy = (vy * -1) / 1.5f;
+                    //ボールがはみ出しているのを補正
+                    ballY = this.radius;
+                }
+            }
+
             //キャンバスに描画する命令
             this.drawCanvas();
         }
@@ -205,14 +240,22 @@ class MainActivity : AppCompatActivity()
             this.ballY,//ボールのY座標
             this.radius,//ボールの半径
             Paint().apply {//Paintの匿名クラス
-                //ボールの色を赤にする
+                //ボールの色を黄色にする
                 this.color = Color.YELLOW
             }
         )
+
+        canvas?.drawRect((surfaceWidth/1.5).toFloat(),
+            (surfaceHeight/1.5).toFloat(),
+            (surfaceWidth/1.3).toFloat(),
+            (surfaceHeight/1.3).toFloat(),
+            Paint().apply{
+                this.color = Color.RED
+            }
+)
         //キャンバスのロックを解除してキャンバスを描画
         surfaceView.holder.unlockCanvasAndPost(canvas)
     }
 
-    //resetButtonタップ時の処理
 
 }
