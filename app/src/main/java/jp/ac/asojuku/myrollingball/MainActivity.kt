@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity()
     , SensorEventListener, //センサーの反応を受け取るためのインターフェース
-    SurfaceHolder.Callback{     //Surfaceviewを実装するのための窓口Holderのコールバックインターフェース
+    SurfaceHolder.Callback{     //SurfaceViewを実装するのための窓口Holderのコールバックインターフェース
 
     //instance property
     //SurfaceViewの幅と高さの初期値を設定
@@ -157,13 +157,8 @@ class MainActivity : AppCompatActivity()
 
             //ブロックに当たった時の判定を作る
             //上下の判定
-            if (block1[0] < ballX && block1[2] > ballX){
-                if (block1[1] > ballY){
-                    //ボールを反転させて勢いをつける
-                    vy = (vy * -1) / 1.5f;
-                    //ボールがはみ出しているのを補正
-                    ballY = this.radius;
-                }else if (block1[3] < ballY){
+            if (block1[0] <= ballX && block1[2] >= ballX){
+                if (block1[1] <= ballY && block1[3] >= ballY){
                     //ボールを反転させて勢いをつける
                     vy = (vy * -1) / 1.5f;
                     //ボールがはみ出しているのを補正
@@ -171,13 +166,8 @@ class MainActivity : AppCompatActivity()
                 }
             }
             //左右の判定
-            if (block1[1] > ballY && block1[3] < ballY){
-                if (block1[0] < ballX){
-                    //ボールを反転させて勢いをつける
-                    vy = (vy * -1) / 1.5f;
-                    //ボールがはみ出しているのを補正
-                    ballY = this.radius;
-                }else if (block1[2] > ballY){
+            if (block1[1] >= ballY && block1[3] <= ballY){
+                if (block1[0] <= ballX || block1[2] >= ballY){
                     //ボールを反転させて勢いをつける
                     vy = (vy * -1) / 1.5f;
                     //ボールがはみ出しているのを補正
@@ -186,7 +176,7 @@ class MainActivity : AppCompatActivity()
             }
 
             //キャンバスに描画する命令
-            this.drawCanvas();
+            this.drawCanvas(block1);
         }
     }
 
@@ -229,7 +219,8 @@ class MainActivity : AppCompatActivity()
     }
 
     //Surfaceのキャンバスに描画する処理をまとめたメソッド
-    private fun drawCanvas(){
+    private fun drawCanvas(block1: Array<Float>){
+
         //キャンバスをロックして取得する
         val canvas = surfaceView.holder.lockCanvas()
         //キャンバスに背景を設定する(dark gray)
@@ -245,14 +236,9 @@ class MainActivity : AppCompatActivity()
             }
         )
 
-        canvas?.drawRect((surfaceWidth/1.5).toFloat(),
-            (surfaceHeight/1.5).toFloat(),
-            (surfaceWidth/1.3).toFloat(),
-            (surfaceHeight/1.3).toFloat(),
-            Paint().apply{
-                this.color = Color.RED
-            }
-)
+        //block1を描画
+        canvas?.drawRect(block1[0],block1[1],block1[2],block1[3],Paint().apply{this.color = Color.RED})
+
         //キャンバスのロックを解除してキャンバスを描画
         surfaceView.holder.unlockCanvasAndPost(canvas)
     }
