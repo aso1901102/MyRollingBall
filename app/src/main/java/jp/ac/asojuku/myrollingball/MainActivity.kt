@@ -22,8 +22,8 @@ class MainActivity : AppCompatActivity()
     private var surfaceHeight:Int = 0;
     //ボールの半径
     private val radius = 50.0f;
-    //ボールの移動量を計算するための係数
-    private val coef = 750.0f;
+    // ボールの移動量を計算するための係数
+    private var coef = 750.0f;
 
     //ボールの座標
     //X座標
@@ -64,6 +64,8 @@ class MainActivity : AppCompatActivity()
             vy = 0f;
             //前回の時間を記録する変数
             time = 0L;
+            //移動量を再設定
+            coef = 750.0f
         }
     }
 
@@ -76,8 +78,8 @@ class MainActivity : AppCompatActivity()
     override fun onSensorChanged(event: SensorEvent?) {
 
         //ブロックの座標（left,top,right,bottom）
-        val block1 = arrayOf((surfaceWidth/1.5).toFloat(),(surfaceHeight/1.5).toFloat(),
-            (surfaceWidth/1.3).toFloat(),(surfaceHeight/1.3).toFloat())
+        val block1 = arrayOf((surfaceWidth/2.5).toFloat(),(surfaceHeight/2.5).toFloat(),
+            (surfaceWidth/1.5).toFloat(),(surfaceHeight/1.5).toFloat())
 
         //eventの中身がnullなら何もせずにreturn
         if(event == null){
@@ -156,25 +158,11 @@ class MainActivity : AppCompatActivity()
             }
 
             //ブロックに当たった時の判定を作る
-            //上下の判定
-            if (block1[0] <= ballX && block1[2] >= ballX){
-                if (block1[1] <= ballY && block1[3] >= ballY){
-                    //ボールを反転させて勢いをつける
-                    vy = (vy * -1) / 1.5f;
-                    //ボールがはみ出しているのを補正
-                    ballY = this.radius;
+            if (block1[0]  < ballX + radius && block1[2] > ballX - radius){
+                if (block1[1] < ballY + radius && block1[3] > ballY - radius){
+                    this.coef = 0.0f
                 }
             }
-            //左右の判定
-            if (block1[1] >= ballY && block1[3] <= ballY){
-                if (block1[0] <= ballX || block1[2] >= ballY){
-                    //ボールを反転させて勢いをつける
-                    vy = (vy * -1) / 1.5f;
-                    //ボールがはみ出しているのを補正
-                    ballY = this.radius;
-                }
-            }
-
             //キャンバスに描画する命令
             this.drawCanvas(block1);
         }
@@ -242,6 +230,4 @@ class MainActivity : AppCompatActivity()
         //キャンバスのロックを解除してキャンバスを描画
         surfaceView.holder.unlockCanvasAndPost(canvas)
     }
-
-
 }
