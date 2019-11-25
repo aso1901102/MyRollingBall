@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity()
             time = 0L;
             //移動量を再設定
             coef = 750.0f
+            textView.setText(R.string.tenstionText)
         }
     }
 
@@ -78,8 +79,11 @@ class MainActivity : AppCompatActivity()
     override fun onSensorChanged(event: SensorEvent?) {
 
         //ブロックの座標（left,top,right,bottom）
-        val block1 = arrayOf((surfaceWidth/2.5).toFloat(),(surfaceHeight/2.5).toFloat(),
-            (surfaceWidth/1.5).toFloat(),(surfaceHeight/1.5).toFloat())
+        val clearBlock = arrayOf((surfaceWidth*-1).toFloat(),(surfaceHeight/1.1).toFloat(),(surfaceWidth/10).toFloat(),(surfaceHeight).toFloat())
+        val block1 = arrayOf((surfaceWidth/10).toFloat(),(surfaceHeight/1.1).toFloat(),(surfaceWidth).toFloat(),(surfaceHeight).toFloat())
+        val block2 = arrayOf((surfaceWidth/1.7).toFloat(),(surfaceHeight/4).toFloat(),(surfaceWidth).toFloat(),(surfaceHeight/6).toFloat())
+        val block3 = arrayOf((surfaceWidth/7.5).toFloat(),(surfaceHeight/2).toFloat(),(surfaceWidth/1.3).toFloat(),(surfaceHeight/2.2).toFloat())
+        val circle1 = arrayOf((surfaceWidth/10).toFloat(),(surfaceHeight/11).toFloat(),100.0f)
 
         //eventの中身がnullなら何もせずにreturn
         if(event == null){
@@ -141,7 +145,6 @@ class MainActivity : AppCompatActivity()
                 //ボールのはみ出しを補正する
                 this.ballX = (this.surfaceWidth - radius)
             }
-
             //上下について
             if((this.ballY - radius < 0) && vy < 0){
                 //上に向かってボールが上にはみ出したとき
@@ -157,15 +160,79 @@ class MainActivity : AppCompatActivity()
                 this.ballY = (this.surfaceHeight - radius)
             }
 
-            //ブロックに当たった時の判定を作る
-            if (block1[0]  < ballX + radius && block1[2] > ballX - radius){
-                if (block1[1] < ballY + radius && block1[3] > ballY - radius){
+            //クリアブロックに当たった時の判定を作る
+            if (clearBlock[0]  < ballX + radius && clearBlock[2] > ballX - radius){
+                if (clearBlock[1] < ballY + radius && clearBlock[3] > ballY - radius){
                     this.coef = 0.0f
+                    textView.setText(R.string.clearText)
+                }
+            }
+            //ブロックに当たった時の判定を作る
+            if (block1[0]  < (ballX + radius) && block1[2] > (ballX - radius)){
+                if (block1[1] < (ballY + radius) && block1[3] > (ballY - radius)){
+                    this.coef = 0.0f
+                    textView.setText(R.string.missText)
+                }
+            }
+            if (block2[0]  < (ballX + radius) && block2[2] > (ballX - radius)){
+                if (block2[1] < (ballY + radius) || block2[3] > (ballY - radius)){
+                    this.coef = 0.0f
+                    textView.setText(R.string.missText)
+                }
+            }
+            if (block3[0]  < (ballX + radius) && block3[2] > (ballX - radius)){
+                if (block3[1] < (ballY + radius) && block3[3] > (ballY - radius)){
+                    this.coef = 0.0f
+                    textView.setText(R.string.missText)
+                }
+            }
+            //circle1 hit
+            if (circle1[0] + circle1[2]  < (ballX + radius) && circle1[1] + circle1[2] > (ballX - radius)){
+                if (circle1[0] + circle1[2] < (ballY + radius) && circle1[1] + circle1[2] > (ballY - radius)){
+                    this.coef = 0.0f
+                    textView.setText(R.string.missText)
                 }
             }
             //キャンバスに描画する命令
-            this.drawCanvas(block1);
+            this.drawCanvas(clearBlock,block1,block2,block3,circle1);
         }
+    }
+
+    //Surfaceのキャンバスに描画する処理をまとめたメソッド
+    private fun drawCanvas(clearBlock: Array<Float>,
+                           block1: Array<Float>,
+                           block2: Array<Float>,
+                           block3: Array<Float>,
+                           circle1: Array<Float>){
+
+        //キャンバスをロックして取得する
+        val canvas = surfaceView.holder.lockCanvas()
+        //キャンバスに背景を設定する(dark gray)
+        canvas.drawColor(Color.DKGRAY)
+        //キャンバスに円を描いてボールにする
+        canvas.drawCircle(
+            this.ballX,//ボールのX座標
+            this.ballY,//ボールのY座標
+            this.radius,//ボールの半径
+            Paint().apply {//Paintの匿名クラス
+                //ボールの色を黄色にする
+                this.color = Color.YELLOW
+            }
+        )
+
+        //clearBlockを描画
+        canvas?.drawRect(clearBlock[0],clearBlock[1],clearBlock[2],clearBlock[3],Paint().apply{this.color = Color.YELLOW})
+        //block1を描画
+        canvas?.drawRect(block1[0],block1[1],block1[2],block1[3],Paint().apply{this.color = Color.RED})
+        //block2を描画
+        canvas?.drawRect(block2[0],block2[1],block2[2],block2[3],Paint().apply{this.color = Color.RED})
+        //block3を描画
+        canvas?.drawRect(block3[0],block3[1],block3[2],block3[3],Paint().apply{this.color = Color.RED})
+        //circle1を描画
+        canvas?.drawCircle(circle1[0],circle1[1],circle1[2],Paint().apply{this.color = Color.RED})
+
+        //キャンバスのロックを解除してキャンバスを描画
+        surfaceView.holder.unlockCanvasAndPost(canvas)
     }
 
     //Surfaceが生成された時のイベントに反応して呼ばれるコールバック
@@ -206,28 +273,5 @@ class MainActivity : AppCompatActivity()
         sensorManager.unregisterListener(this)
     }
 
-    //Surfaceのキャンバスに描画する処理をまとめたメソッド
-    private fun drawCanvas(block1: Array<Float>){
 
-        //キャンバスをロックして取得する
-        val canvas = surfaceView.holder.lockCanvas()
-        //キャンバスに背景を設定する(dark gray)
-        canvas.drawColor(Color.DKGRAY)
-        //キャンバスに円を描いてボールにする
-        canvas.drawCircle(
-            this.ballX,//ボールのX座標
-            this.ballY,//ボールのY座標
-            this.radius,//ボールの半径
-            Paint().apply {//Paintの匿名クラス
-                //ボールの色を黄色にする
-                this.color = Color.YELLOW
-            }
-        )
-
-        //block1を描画
-        canvas?.drawRect(block1[0],block1[1],block1[2],block1[3],Paint().apply{this.color = Color.RED})
-
-        //キャンバスのロックを解除してキャンバスを描画
-        surfaceView.holder.unlockCanvasAndPost(canvas)
-    }
 }
