@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity()
         val block1 = arrayOf((surfaceWidth/10).toFloat(),(surfaceHeight/1.1).toFloat(),(surfaceWidth).toFloat(),(surfaceHeight).toFloat())
         val block2 = arrayOf((surfaceWidth/1.7).toFloat(),(surfaceHeight/4).toFloat(),(surfaceWidth).toFloat(),(surfaceHeight/6).toFloat())
         val block3 = arrayOf((surfaceWidth/7.5).toFloat(),(surfaceHeight/2).toFloat(),(surfaceWidth/1.3).toFloat(),(surfaceHeight/2.2).toFloat())
-        val circle1 = arrayOf((surfaceWidth/10).toFloat(),(surfaceHeight/11).toFloat(),100.0f)
+        val circle1 = arrayOf((surfaceWidth/10).toFloat(),(surfaceHeight/12).toFloat(),100.0f)
 
         //eventの中身がnullなら何もせずにreturn
         if(event == null){
@@ -168,31 +168,33 @@ class MainActivity : AppCompatActivity()
                 }
             }
             //ブロックに当たった時の判定を作る
-            if (block1[0]  < (ballX + radius) && block1[2] > (ballX - radius)){
-                if (block1[1] < (ballY + radius) && block1[3] > (ballY - radius)){
+            if (block1[0]  < (ballX + radius) && block1[2] > (ballX - radius) && block1[1] < (ballY + radius) && block1[3] > (ballY - radius)){
                     this.coef = 0.0f
                     textView.setText(R.string.missText)
-                }
             }
+
+            //ブロックに当たった時の判定を作る
             if (block2[0]  < (ballX + radius) && block2[2] > (ballX - radius)){
-                if (block2[1] < (ballY + radius) || block2[3] > (ballY - radius)){
+                if (block2[1] < (ballY + radius) && block2[3] > (ballY - radius)){
                     this.coef = 0.0f
                     textView.setText(R.string.missText)
                 }
             }
+            //ブロックに当たった時の判定を作る
             if (block3[0]  < (ballX + radius) && block3[2] > (ballX - radius)){
                 if (block3[1] < (ballY + radius) && block3[3] > (ballY - radius)){
                     this.coef = 0.0f
                     textView.setText(R.string.missText)
                 }
             }
-            //circle1 hit
-            if (circle1[0] + circle1[2]  < (ballX + radius) && circle1[1] + circle1[2] > (ballX - radius)){
-                if (circle1[0] + circle1[2] < (ballY + radius) && circle1[1] + circle1[2] > (ballY - radius)){
+            //ブロックに当たった時の判定を作る
+            if ((circle1[0] + circle1[2]) > (ballX + radius) && (circle1[0] - circle1[2]) > (ballX - radius)){
+                if ((circle1[1] + circle1[2]) > (ballY + radius) && (circle1[1] - circle1[2]) > (ballY - radius)){
                     this.coef = 0.0f
                     textView.setText(R.string.missText)
                 }
             }
+
             //キャンバスに描画する命令
             this.drawCanvas(clearBlock,block1,block2,block3,circle1);
         }
